@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WonderTales
+
+AI-powered personalized children's book platform. Turn photos into beautifully illustrated hardbound storybooks.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion, GSAP with ScrollTrigger
+- **Smooth Scroll**: Lenis
+- **Fonts**: Fredoka, Quicksand (Google Fonts)
+- **Deployment**: Vercel
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Run fresh dev server (kills existing processes first)
+npm run dev:fresh
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The platform serves different audiences through dedicated landing pages, each with unique theming, copy, and imagery.
 
-## Learn More
+| Route | Audience | Description |
+|-------|----------|-------------|
+| `/` | Children/Parents | Kids adventure books - the main product |
+| `/valentines` | Couples | Romantic love story keepsakes |
+| `/worldcup` | Football fans | World Cup champion stories |
+| `/birthday` | Birthday celebrations | Personalized birthday adventure books |
+| `/graduation` | Graduates/Families | Academic journey keepsakes |
+| `/newbaby` | New parents | Baby welcome and sibling stories |
+| `/anniversary` | Couples | Anniversary milestone keepsakes |
 
-To learn more about Next.js, take a look at the following resources:
+Each endpoint includes:
+- Theme-specific navbar and footer
+- MagicMirror hero section (before/after slider)
+- MagicPreviewCTA (lead capture with free cover preview)
+- HowItWorks process section (5-step scroll animation)
+- Shipping section with pricing options
+- Book preview gallery
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  page.tsx              # Kids endpoint (/)
+  valentines/page.tsx   # Valentine's endpoint
+  worldcup/page.tsx     # World Cup endpoint
+  birthday/page.tsx     # Birthday endpoint
+  graduation/page.tsx   # Graduation endpoint
+  newbaby/page.tsx      # New baby endpoint
+  anniversary/page.tsx  # Anniversary endpoint
 
-## Deploy on Vercel
+components/
+  MagicMirror.tsx       # Theme-adaptive hero slider
+  MagicPreviewCTA.tsx   # Theme-adaptive lead capture
+  SmoothScroll.tsx      # Lenis smooth scroll provider
+  Navbar.tsx            # Main site navbar
+  Footer.tsx            # Main site footer
+  
+  process/              # How It Works section
+    HowItWorks.tsx
+    themes.ts
+    types.ts
+    index.ts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  valentines/           # Valentine's specific components
+  worldcup/             # World Cup specific components
+  birthday/             # Birthday specific components
+  graduation/           # Graduation specific components
+  newbaby/              # New baby specific components
+  anniversary/          # Anniversary specific components
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Adding New Endpoints
+
+1. Add theme variant to type definitions:
+   - `components/MagicMirror.tsx`
+   - `components/MagicPreviewCTA.tsx`
+   - `components/process/types.ts`
+
+2. Add theme configuration:
+   - `components/process/themes.ts`
+
+3. Create endpoint-specific components:
+   - `components/[theme]/[Theme]Navbar.tsx`
+   - `components/[theme]/[Theme]Shipping.tsx`
+   - `components/[theme]/[Theme]BookPreview.tsx`
+   - `components/[theme]/[Theme]Footer.tsx`
+
+4. Create page:
+   - `app/[theme]/page.tsx`
+
+## Deployment
+
+Deploy to Vercel:
+
+```bash
+npm run build
+vercel deploy
+```
+
+Or connect the GitHub repository to Vercel for automatic deployments.
+
+## License
+
+Private - All rights reserved.
