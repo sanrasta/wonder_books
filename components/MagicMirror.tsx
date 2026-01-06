@@ -3,13 +3,30 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-type ThemeVariant = "kids" | "valentines" | "worldcup";
+type ThemeVariant = "kids" | "valentines" | "worldcup" | "birthday" | "graduation" | "newbaby" | "anniversary";
 
 interface MagicMirrorProps {
   theme: ThemeVariant;
 }
 
-const themes = {
+const themes: Record<ThemeVariant, {
+  headline: React.ReactNode;
+  subheadline: string;
+  beforeImage: string;
+  afterImage: string;
+  beforeLabel: string;
+  afterLabel: string;
+  quote: string;
+  accentColor: string;
+  labelBgBefore: string;
+  labelBgAfter: string;
+  sliderBorder: string;
+  sliderIcon: string;
+  headlineColor: string;
+  subheadlineColor: string;
+  scrollHintColor: string;
+  sliderEmoji?: string;
+}> = {
   kids: {
     headline: (
       <>
@@ -87,6 +104,115 @@ const themes = {
     headlineColor: "text-gray-900",
     subheadlineColor: "text-gray-600",
     scrollHintColor: "text-emerald-400",
+    sliderEmoji: "⚽",
+  },
+  birthday: {
+    headline: (
+      <>
+        Make their <span className="text-amber-500">birthday</span>
+        <br />
+        unforgettable.
+      </>
+    ),
+    subheadline:
+      "Turn their special day into a personalized adventure book where they're the star of the celebration.",
+    beforeImage:
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&q=80&w=2000",
+    afterImage:
+      "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?auto=format&fit=crop&q=80&w=2000",
+    beforeLabel: "ANOTHER YEAR",
+    afterLabel: "MAGICAL DAY",
+    quote: '"And on that special day, the whole kingdom celebrated..."',
+    accentColor: "amber",
+    labelBgBefore: "bg-white/80",
+    labelBgAfter: "bg-amber-500 text-white",
+    sliderBorder: "border-amber-200",
+    sliderIcon: "text-amber-500",
+    headlineColor: "text-gray-900",
+    subheadlineColor: "text-gray-600",
+    scrollHintColor: "text-amber-400",
+    sliderEmoji: "🎂",
+  },
+  graduation: {
+    headline: (
+      <>
+        Celebrate their <span className="text-blue-700">achievement</span>
+        <br />
+        forever.
+      </>
+    ),
+    subheadline:
+      "From first day to graduation day — transform their educational journey into an illustrated keepsake they'll treasure.",
+    beforeImage:
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=2000",
+    afterImage:
+      "https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&q=80&w=2000",
+    beforeLabel: "THE JOURNEY",
+    afterLabel: "THE ACHIEVEMENT",
+    quote: '"After years of hard work, the moment finally arrived..."',
+    accentColor: "blue",
+    labelBgBefore: "bg-white/80",
+    labelBgAfter: "bg-blue-700 text-white",
+    sliderBorder: "border-blue-200",
+    sliderIcon: "text-blue-600",
+    headlineColor: "text-gray-900",
+    subheadlineColor: "text-gray-600",
+    scrollHintColor: "text-blue-400",
+    sliderEmoji: "🎓",
+  },
+  newbaby: {
+    headline: (
+      <>
+        Welcome <span className="text-pink-400">little one</span>
+        <br />
+        to the world.
+      </>
+    ),
+    subheadline:
+      "Create a beautiful keepsake book celebrating the arrival of your newest family member — a treasure for years to come.",
+    beforeImage:
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=2000",
+    afterImage:
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=2000",
+    beforeLabel: "WAITING",
+    afterLabel: "ARRIVED",
+    quote: '"And then, the most wonderful miracle happened..."',
+    accentColor: "pink",
+    labelBgBefore: "bg-white/80",
+    labelBgAfter: "bg-pink-400 text-white",
+    sliderBorder: "border-pink-200",
+    sliderIcon: "text-pink-400",
+    headlineColor: "text-gray-900",
+    subheadlineColor: "text-gray-600",
+    scrollHintColor: "text-pink-300",
+    sliderEmoji: "👶",
+  },
+  anniversary: {
+    headline: (
+      <>
+        Celebrate your <span className="text-amber-600">love story</span>
+        <br />
+        milestone.
+      </>
+    ),
+    subheadline:
+      "Turn years of memories into a beautifully illustrated book — the perfect gift to celebrate your journey together.",
+    beforeImage:
+      "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&q=80&w=2000",
+    afterImage:
+      "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&q=80&w=2000",
+    beforeLabel: "THEN",
+    afterLabel: "FOREVER",
+    quote: '"Through all the years, our love only grew stronger..."',
+    accentColor: "amber",
+    labelBgBefore: "bg-white/80",
+    labelBgAfter: "bg-gradient-to-r from-amber-500 to-amber-600 text-white",
+    sliderBorder: "border-amber-300",
+    sliderIcon: "text-amber-500",
+    headlineColor: "text-gray-900",
+    subheadlineColor: "text-gray-600",
+    scrollHintColor: "text-amber-400",
+    sliderEmoji: "💍",
   },
 };
 
@@ -160,7 +286,13 @@ export default function MagicMirror({ theme }: MagicMirrorProps) {
           >
             <div
               className={`bg-white/90 p-4 md:p-6 rounded-2xl md:rounded-[2rem] shadow-xl max-w-[200px] md:max-w-none ${
-                theme === "valentines" ? "text-rose-900" : "text-indigo-900"
+                theme === "valentines" ? "text-rose-900" : 
+                theme === "birthday" ? "text-amber-900" :
+                theme === "graduation" ? "text-blue-900" :
+                theme === "newbaby" ? "text-pink-900" :
+                theme === "anniversary" ? "text-amber-900" :
+                theme === "worldcup" ? "text-emerald-900" :
+                "text-indigo-900"
               }`}
             >
               <p className="font-bold italic text-sm md:text-base">{t.quote}</p>
@@ -187,10 +319,10 @@ export default function MagicMirror({ theme }: MagicMirrorProps) {
             whileHover={{ scale: 1.2 }}
             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center shadow-2xl border-4 ${t.sliderBorder}`}
           >
-            {theme === "valentines" ? (
+            {t.sliderEmoji ? (
+              <span className={`${t.sliderIcon} text-lg md:text-xl`}>{t.sliderEmoji}</span>
+            ) : theme === "valentines" ? (
               <span className="text-rose-400 text-lg md:text-xl">♥</span>
-            ) : theme === "worldcup" ? (
-              <span className="text-emerald-500 text-lg md:text-xl">⚽</span>
             ) : (
               <svg
                 className={`w-5 h-5 md:w-6 md:h-6 ${t.sliderIcon}`}

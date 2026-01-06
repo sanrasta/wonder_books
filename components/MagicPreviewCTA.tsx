@@ -4,13 +4,31 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-type ThemeVariant = 'kids' | 'valentines' | 'worldcup';
+type ThemeVariant = 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary';
 
 interface MagicPreviewCTAProps {
   theme: ThemeVariant;
 }
 
-const themes = {
+const themes: Record<ThemeVariant, {
+  headline: string;
+  subheadline: string;
+  buttonText: string;
+  buttonGlow: string;
+  buttonBg: string;
+  accentColor: string;
+  modalTitle: string;
+  modalSubtitle: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  genderLabel: string;
+  genderOptions: { id: string; label: string; icon: string }[];
+  emailPrompt: string;
+  generateText: string;
+  bgGradient: string;
+  floatingIcons: string[];
+  mockCover: string;
+}> = {
   kids: {
     headline: 'See Your Child as the Hero',
     subheadline: 'Upload a photo and watch the magic happen — completely free',
@@ -31,6 +49,7 @@ const themes = {
     generateText: 'Generate My Magic Cover ✨',
     bgGradient: 'from-indigo-50 via-white to-purple-50',
     floatingIcons: ['✨', '🌟'],
+    mockCover: 'https://images.unsplash.com/photo-1633469924738-52101af51d87?w=800&auto=format&fit=crop&q=60',
   },
   valentines: {
     headline: 'See Your Love Story Come to Life',
@@ -53,6 +72,7 @@ const themes = {
     generateText: 'Create Our Cover 💕',
     bgGradient: 'from-rose-50 via-white to-pink-50',
     floatingIcons: ['💕', '💘'],
+    mockCover: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&auto=format&fit=crop&q=60',
   },
   worldcup: {
     headline: 'See Yourself Lifting the Trophy',
@@ -75,6 +95,100 @@ const themes = {
     generateText: 'Create My Cover ⚽',
     bgGradient: 'from-emerald-50 via-white to-green-50',
     floatingIcons: ['⚽', '🏆'],
+    mockCover: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&auto=format&fit=crop&q=60',
+  },
+  birthday: {
+    headline: 'Make Their Birthday Magical',
+    subheadline: 'Create a personalized birthday adventure — completely free preview',
+    buttonText: 'Create Birthday Magic',
+    buttonGlow: '#F59E0B',
+    buttonBg: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+    accentColor: '#F59E0B',
+    modalTitle: 'Create Birthday Magic',
+    modalSubtitle: 'Upload their photo and we\'ll create something special',
+    nameLabel: 'Birthday Star\'s Name',
+    namePlaceholder: 'Emma',
+    genderLabel: 'They are...',
+    genderOptions: [
+      { id: 'boy', label: 'Boy', icon: '👦' },
+      { id: 'girl', label: 'Girl', icon: '👧' },
+    ],
+    emailPrompt: 'Where should we send the birthday preview?',
+    generateText: 'Create Birthday Cover 🎂',
+    bgGradient: 'from-amber-50 via-white to-orange-50',
+    floatingIcons: ['🎂', '🎁'],
+    mockCover: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=800&auto=format&fit=crop&q=60',
+  },
+  graduation: {
+    headline: 'Celebrate Their Achievement',
+    subheadline: 'Turn their academic journey into a beautiful keepsake — free preview',
+    buttonText: 'Create Graduation Book',
+    buttonGlow: '#1D4ED8',
+    buttonBg: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+    accentColor: '#3B82F6',
+    modalTitle: 'Create Their Graduation Story',
+    modalSubtitle: 'Upload their photo and we\'ll capture their journey',
+    nameLabel: 'Graduate\'s Name',
+    namePlaceholder: 'Alex',
+    genderLabel: 'Graduating from...',
+    genderOptions: [
+      { id: 'preschool', label: 'Preschool', icon: '🎒' },
+      { id: 'elementary', label: 'Elementary', icon: '📚' },
+      { id: 'highschool', label: 'High School', icon: '🎓' },
+      { id: 'college', label: 'College', icon: '🏛️' },
+    ],
+    emailPrompt: 'Where should we send the graduation preview?',
+    generateText: 'Create Graduation Cover 🎓',
+    bgGradient: 'from-blue-50 via-white to-indigo-50',
+    floatingIcons: ['🎓', '📜'],
+    mockCover: 'https://images.unsplash.com/photo-1627556704302-624286467c65?w=800&auto=format&fit=crop&q=60',
+  },
+  newbaby: {
+    headline: 'Welcome Your Little One',
+    subheadline: 'Create a beautiful welcome book for your new arrival — free preview',
+    buttonText: 'Create Welcome Book',
+    buttonGlow: '#EC4899',
+    buttonBg: 'linear-gradient(135deg, #F472B6 0%, #EC4899 100%)',
+    accentColor: '#EC4899',
+    modalTitle: 'Create Baby\'s Welcome Story',
+    modalSubtitle: 'Upload a photo and we\'ll create something precious',
+    nameLabel: 'Baby\'s Name',
+    namePlaceholder: 'Lily',
+    genderLabel: 'Baby is a...',
+    genderOptions: [
+      { id: 'boy', label: 'Boy', icon: '👶' },
+      { id: 'girl', label: 'Girl', icon: '👶' },
+      { id: 'surprise', label: 'Surprise!', icon: '🎀' },
+    ],
+    emailPrompt: 'Where should we send the baby book preview?',
+    generateText: 'Create Baby Cover 👶',
+    bgGradient: 'from-pink-50 via-white to-rose-50',
+    floatingIcons: ['👶', '🍼'],
+    mockCover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=800&auto=format&fit=crop&q=60',
+  },
+  anniversary: {
+    headline: 'Celebrate Years of Love',
+    subheadline: 'Turn your memories into a beautiful anniversary keepsake — free preview',
+    buttonText: 'Create Our Story',
+    buttonGlow: '#D97706',
+    buttonBg: 'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)',
+    accentColor: '#D97706',
+    modalTitle: 'Create Your Anniversary Story',
+    modalSubtitle: 'Upload your favorite photo together',
+    nameLabel: 'Your Names',
+    namePlaceholder: 'Alex & Jordan',
+    genderLabel: 'Celebrating...',
+    genderOptions: [
+      { id: '1year', label: '1 Year', icon: '💝' },
+      { id: '5years', label: '5 Years', icon: '💎' },
+      { id: '10years', label: '10+ Years', icon: '🏆' },
+      { id: '25years', label: '25+ Years', icon: '👑' },
+    ],
+    emailPrompt: 'Where should we send your anniversary preview?',
+    generateText: 'Create Our Cover 💍',
+    bgGradient: 'from-amber-50 via-white to-yellow-50',
+    floatingIcons: ['💍', '💝'],
+    mockCover: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&auto=format&fit=crop&q=60',
   },
 };
 
@@ -121,12 +235,7 @@ export default function MagicPreviewCTA({ theme }: MagicPreviewCTAProps) {
     // Simulate API call
     setTimeout(() => {
       setIsGenerating(false);
-      const mockCovers = {
-        kids: 'https://images.unsplash.com/photo-1633469924738-52101af51d87?w=800&auto=format&fit=crop&q=60',
-        valentines: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&auto=format&fit=crop&q=60',
-        worldcup: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&auto=format&fit=crop&q=60',
-      };
-      setGeneratedCover(mockCovers[theme]);
+      setGeneratedCover(t.mockCover);
       setStep(3);
     }, 3000);
   };
