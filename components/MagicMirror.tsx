@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-type ThemeVariant = "kids" | "valentines" | "worldcup" | "birthday" | "graduation" | "newbaby" | "anniversary";
+type ThemeVariant = "kids" | "valentines" | "worldcup" | "birthday" | "graduation" | "newbaby" | "anniversary" | "dogtraining";
 
 interface MagicMirrorProps {
   theme: ThemeVariant;
@@ -214,6 +214,33 @@ const themes: Record<ThemeVariant, {
     scrollHintColor: "text-amber-400",
     sliderEmoji: "💍",
   },
+  dogtraining: {
+    headline: (
+      <>
+        Turn your <span className="text-orange-500">best friend</span>
+        <br />
+        into a storybook hero.
+      </>
+    ),
+    subheadline:
+      "Upload a photo of your pup and watch them become the star of their very own illustrated adventure book.",
+    beforeImage:
+      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&q=80&w=2000",
+    afterImage:
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=2000",
+    beforeLabel: "YOUR PUP",
+    afterLabel: "HERO DOG",
+    quote: '"And so began the greatest adventure of the bravest pup..."',
+    accentColor: "orange",
+    labelBgBefore: "bg-white/80",
+    labelBgAfter: "bg-orange-500 text-white",
+    sliderBorder: "border-orange-200",
+    sliderIcon: "text-orange-500",
+    headlineColor: "text-gray-900",
+    subheadlineColor: "text-gray-600",
+    scrollHintColor: "text-orange-400",
+    sliderEmoji: "🐕",
+  },
 };
 
 export default function MagicMirror({ theme }: MagicMirrorProps) {
@@ -292,6 +319,7 @@ export default function MagicMirror({ theme }: MagicMirrorProps) {
                 theme === "newbaby" ? "text-pink-900" :
                 theme === "anniversary" ? "text-amber-900" :
                 theme === "worldcup" ? "text-emerald-900" :
+                theme === "dogtraining" ? "text-orange-900" :
                 "text-indigo-900"
               }`}
             >

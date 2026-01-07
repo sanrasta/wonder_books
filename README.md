@@ -45,6 +45,7 @@ The platform serves different audiences through dedicated landing pages, each wi
 | `/graduation` | Graduates/Families | Academic journey keepsakes |
 | `/newbaby` | New parents | Baby welcome and sibling stories |
 | `/anniversary` | Couples | Anniversary milestone keepsakes |
+| `/dogtraining` | Dog owners | Personalized dog adventure storybooks |
 
 Each endpoint includes:
 - Theme-specific navbar and footer
@@ -65,6 +66,7 @@ app/
   graduation/page.tsx   # Graduation endpoint
   newbaby/page.tsx      # New baby endpoint
   anniversary/page.tsx  # Anniversary endpoint
+  dogtraining/page.tsx  # Dog training/pet endpoint
 
 components/
   MagicMirror.tsx       # Theme-adaptive hero slider
@@ -85,6 +87,7 @@ components/
   graduation/           # Graduation specific components
   newbaby/              # New baby specific components
   anniversary/          # Anniversary specific components
+  dogtraining/          # Dog training/pet specific components
 ```
 
 ## Adding New Endpoints

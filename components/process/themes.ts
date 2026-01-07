@@ -877,13 +877,139 @@ export const anniversaryProcessTheme: ProcessTheme = {
   },
 };
 
-export function getProcessTheme(variant: 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary'): ProcessTheme {
+export const dogtrainingProcessTheme: ProcessTheme = {
+  variant: 'dogtraining',
+  colors: {
+    background: '#FFF7ED',
+    backgroundAlt: '#FFEDD5',
+    card: '#FFFFFF',
+    progressBar: '#FED7AA',
+    progressFill: '#9A3412',
+    progressIndicator: '#F97316',
+    text: '#9A3412',
+    textMuted: '#C2410C',
+    accent: '#F97316',
+    accentText: '#EA580C',
+    pricingBg: '#9A3412',
+    pricingCard: '#FFFFFF',
+    pricingCardAlt: '#FFF7ED',
+  },
+  sectionTitle: 'How Your Pup Becomes a Hero',
+  sectionSubtitle: 'From photo to pawsome storybook adventure',
+  steps: [
+    {
+      id: 'step-1',
+      number: '/01/',
+      title: 'Upload Your Pup\'s Photo',
+      subtitle: 'Every hero has a story',
+      description: 'Upload a clear photo of your furry friend. Our AI will transform them into the brave protagonist of their very own illustrated adventure.',
+      bulletPoints: [
+        'Upload any clear dog photo',
+        'AI creates their illustrated character',
+        'Choose adventure style',
+        'Preview your hero pup instantly',
+      ],
+      illustration: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop&q=60',
+    },
+    {
+      id: 'step-2',
+      number: '/02/',
+      title: 'Preview the Magic',
+      subtitle: 'See them as the star — free',
+      description: 'We generate a stunning book cover featuring your dog as the hero. This preview is completely free and shows you the quality to expect.',
+      bulletPoints: [
+        'Free hero dog cover preview',
+        'Multiple adventure styles',
+        'See your pup illustrated',
+        'No payment required to preview',
+      ],
+      illustration: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=60',
+    },
+    {
+      id: 'step-3',
+      number: '/03/',
+      title: 'Customize Their Adventure',
+      subtitle: 'Make it uniquely theirs',
+      description: 'Choose the adventure theme — rescue mission, treasure hunt, or making new friends. Add their name, personality traits, and favorite things.',
+      bulletPoints: [
+        'Choose adventure themes',
+        'Add their personality',
+        'Include their favorite toys',
+        'Personalize every detail',
+      ],
+      illustration: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop&q=60',
+    },
+    {
+      id: 'step-4',
+      number: '/04/',
+      title: 'We Create Their Story',
+      subtitle: 'Every page is pawsome',
+      description: 'Our team brings your pup\'s adventure to life with beautiful illustrations. Each page maintains their unique appearance and personality.',
+      bulletPoints: [
+        'AI-powered illustrations',
+        'Consistent character design',
+        'Professional story layout',
+        'Quality you can trust',
+      ],
+      illustration: 'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&auto=format&fit=crop&q=60',
+    },
+    {
+      id: 'step-5',
+      number: '/05/',
+      title: 'Delivered to Your Door',
+      subtitle: 'A treasure for dog lovers',
+      description: 'Your finished book arrives printed on premium paper with a beautiful hardcover. Perfect for dog parents, kids, or anyone who loves their furry friend.',
+      bulletPoints: [
+        'Premium hardcover printing',
+        'Worldwide shipping',
+        'Gift wrapping available',
+        'A keepsake they\'ll love',
+      ],
+      illustration: 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&auto=format&fit=crop&q=60',
+    },
+  ],
+  pricing: {
+    title: 'Simple and affordable price.',
+    subtitle: 'No funny hidden fees.',
+    tiers: [
+      {
+        id: 'basic',
+        name: 'Pup',
+        features: [
+          '12 illustrated pages',
+          'Softcover finish',
+          'Digital PDF included',
+          'Standard shipping',
+          'One revision',
+        ],
+        ctaText: 'Start now',
+      },
+      {
+        id: 'popular',
+        name: 'Hero',
+        popular: true,
+        features: [
+          'All Pup features +',
+          '24 illustrated pages',
+          'Premium hardcover',
+          'Priority shipping',
+          'Three revisions',
+          'Gift wrapping',
+        ],
+        ctaText: 'Start now',
+      },
+    ],
+  },
+};
+
+export function getProcessTheme(variant: 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary' | 'dogtraining'): ProcessTheme {
   if (variant === 'valentines') return valentinesProcessTheme;
   if (variant === 'worldcup') return worldcupProcessTheme;
   if (variant === 'birthday') return birthdayProcessTheme;
   if (variant === 'graduation') return graduationProcessTheme;
   if (variant === 'newbaby') return newbabyProcessTheme;
   if (variant === 'anniversary') return anniversaryProcessTheme;
+  if (variant === 'dogtraining') return dogtrainingProcessTheme;
   return kidsProcessTheme;
 }
 

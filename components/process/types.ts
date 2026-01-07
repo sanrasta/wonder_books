@@ -1,6 +1,6 @@
 // Types for the How It Works scroll section
 
-export type ThemeVariant = 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary';
+export type ThemeVariant = 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary' | 'dogtraining';
 
 export interface ProcessStep {
   id: string;

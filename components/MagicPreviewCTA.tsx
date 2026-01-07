@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-type ThemeVariant = 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary';
+type ThemeVariant = 'kids' | 'valentines' | 'worldcup' | 'birthday' | 'graduation' | 'newbaby' | 'anniversary' | 'dogtraining';
 
 interface MagicPreviewCTAProps {
   theme: ThemeVariant;
@@ -189,6 +189,28 @@ const themes: Record<ThemeVariant, {
     bgGradient: 'from-amber-50 via-white to-yellow-50',
     floatingIcons: ['💍', '💝'],
     mockCover: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&auto=format&fit=crop&q=60',
+  },
+  dogtraining: {
+    headline: 'See Your Pup as the Hero',
+    subheadline: 'Upload a photo of your furry friend and watch them become a storybook star — free preview',
+    buttonText: 'Create My Pup\'s Story',
+    buttonGlow: '#F97316',
+    buttonBg: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+    accentColor: '#F97316',
+    modalTitle: 'Create Your Dog\'s Adventure',
+    modalSubtitle: 'Upload their photo and we\'ll create something pawsome',
+    nameLabel: 'Dog\'s Name',
+    namePlaceholder: 'Buddy',
+    genderLabel: 'Your pup is a...',
+    genderOptions: [
+      { id: 'boy', label: 'Good Boy', icon: '🐕' },
+      { id: 'girl', label: 'Good Girl', icon: '🐩' },
+    ],
+    emailPrompt: 'Where should we send your pup\'s preview?',
+    generateText: 'Create Pup\'s Cover 🐕',
+    bgGradient: 'from-orange-50 via-white to-amber-50',
+    floatingIcons: ['🐕', '🦴'],
+    mockCover: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=60',
   },
 };
 
