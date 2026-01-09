@@ -4,6 +4,7 @@ import MagicPreviewCTA from "@/components/MagicPreviewCTA";
 import { HowItWorks } from "@/components/process";
 import WorldwideWonder from "@/components/WorldwideWonder";
 import BookPreview from "@/components/BookPreview";
+import { BookPortal } from "@/components/BookPortal";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -22,6 +23,9 @@ export default function Home() {
       </section>
       <section id="library">
         <BookPreview />
+      </section>
+      <section id="book-portal">
+        <BookPortal />
       </section>
       <Footer />
     </main>
