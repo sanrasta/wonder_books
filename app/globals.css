@@ -139,3 +139,12 @@ html.lenis, html.lenis body {
   color: white;
 }
 
+/* Animate float for BookPortal */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Perspective utility */
+.perspective-\[1500px\] {
+  perspective: 1500px;
+}
