@@ -9,24 +9,25 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Navbar />
-      <MagicMirror theme="kids" />
-      <section id="create">
-        <MagicPreviewCTA theme="kids" />
-      </section>
-      <section id="how-it-works">
-        <HowItWorks theme="kids" />
-      </section>
-      <section id="gifts">
-        <WorldwideWonder />
+    <main className="min-h-screen relative">
+      {/* Hero deck - scrolls normally so user can see full content */}
+      <div className="hero-deck relative z-10">
+        <Navbar />
+        <MagicMirror theme="kids" />
+      </div>
+      
+      {/* BookPortal overlaps and covers the hero like a deck of cards */}
+      {/* negative margin pulls it up to overlap the hero area */}
+      <section id="book-portal" className="relative z-20 -mt-[30vh]">
+        <BookPortal />
       </section>
       <section id="library">
         <BookPreview />
       </section>
-      <section id="book-portal">
-        <BookPortal />
-      </section>
+      
+     
+   
+    
       <Footer />
     </main>
   );
