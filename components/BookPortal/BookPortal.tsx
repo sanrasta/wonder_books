@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -232,22 +233,16 @@ export default function BookPortal() {
             {/* RIGHT PAGE (Hero character) */}
             <div 
               ref={spreadRef}
-              className="w-[350px] h-[480px] bg-gradient-to-br from-amber-100 to-orange-50 relative overflow-hidden rounded-2xl shadow-xl opacity-0"
+              className="w-[350px] h-[480px] relative overflow-hidden rounded-2xl shadow-xl opacity-0"
             >
+              <Image
+                src="/Sura (20 x 20 cm)/3.png"
+                alt="Right Page"
+                fill
+                className="object-cover"
+              />
               {/* Spine shadow on left edge */}
-              <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-amber-300/50 to-transparent" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-                <div className="w-36 h-36 rounded-full bg-gradient-to-br from-amber-300 to-orange-400 flex items-center justify-center text-6xl mb-4 ring-4 ring-amber-200 shadow-lg">
-                  🦸
-                </div>
-                <p className="text-indigo-900 font-bold text-xl mb-2">You, as the hero!</p>
-                <p className="text-indigo-700 text-sm text-center">Your face, your adventure,<br/>your unforgettable story.</p>
-                <div className="mt-4 space-y-2 w-full px-4 opacity-30">
-                  <div className="h-2 bg-indigo-200 rounded-full w-full" />
-                  <div className="h-2 bg-indigo-200 rounded-full w-4/5" />
-                  <div className="h-2 bg-indigo-200 rounded-full w-3/5" />
-                </div>
-              </div>
+              <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-black/20 to-transparent" />
             </div>
           </div>
 
@@ -260,45 +255,36 @@ export default function BookPortal() {
           >
             {/* FRONT of cover */}
             <div 
-              className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 rounded-2xl shadow-2xl flex flex-col items-center justify-center p-6 md:p-8"
+              className="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden"
               style={{ backfaceVisibility: "hidden" }}
             >
-              <div className="text-5xl md:text-7xl mb-3 md:mb-4">📚</div>
-              <h3 className="text-white text-lg md:text-2xl font-bold text-center mb-2">
-                Your Magical<br/>Adventure
-              </h3>
-              <div className="w-12 md:w-16 h-1 bg-amber-400 rounded-full mb-3 md:mb-4" />
-              <p className="text-indigo-200 text-xs md:text-sm">A Personalized Story</p>
-              <div className="absolute top-3 md:top-4 right-3 md:right-4 text-xl md:text-2xl">⭐</div>
-              <div className="absolute bottom-3 md:bottom-4 left-3 md:left-4 text-xl md:text-2xl">🌙</div>
+              <Image
+                src="/Sura (20 x 20 cm)/1.png.jpeg"
+                alt="Book Cover"
+                fill
+                className="object-cover"
+                priority
+              />
               {/* Spine edge */}
-              <div className="absolute left-0 top-0 bottom-0 w-3 md:w-4 bg-gradient-to-r from-indigo-900 to-transparent rounded-l-lg" />
+              <div className="absolute left-0 top-0 bottom-0 w-3 md:w-4 bg-gradient-to-r from-black/30 to-transparent rounded-l-lg" />
             </div>
             
             {/* BACK of cover = FIRST PAGE (revealed when cover opens) - DESKTOP ONLY */}
             <div 
-              className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl hidden md:block"
+              className="absolute inset-0 rounded-2xl hidden md:block overflow-hidden"
               style={{ 
                 backfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
               }}
             >
-              {/* First page content - "Once upon a time..." */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-                <div className="w-full h-64 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl mb-4 flex items-center justify-center">
-                  <span className="text-7xl">🏰</span>
-                </div>
-                <p className="text-indigo-800 font-bold text-center text-base">
-                  Once upon a time...
-                </p>
-                <div className="mt-4 space-y-2 w-full px-4 opacity-40">
-                  <div className="h-2 bg-indigo-200 rounded-full w-full" />
-                  <div className="h-2 bg-indigo-200 rounded-full w-4/5" />
-                  <div className="h-2 bg-indigo-200 rounded-full w-5/6" />
-                </div>
-              </div>
+              <Image
+                src="/Sura (20 x 20 cm)/2.png"
+                alt="Left Page"
+                fill
+                className="object-cover"
+              />
               {/* Spine edge on left */}
-              <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-amber-300/50 to-transparent" />
+              <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-black/20 to-transparent" />
             </div>
           </div>
 
