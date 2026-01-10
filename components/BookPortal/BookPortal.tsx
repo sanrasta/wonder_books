@@ -24,18 +24,52 @@ export default function BookPortal() {
   const coverBackRef = useRef<HTMLDivElement>(null); // Cover's back (4.png)
   
   const [isMounted, setIsMounted] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
     setIsMounted(true);
+    setScreenWidth(window.innerWidth);
+    
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || screenWidth === 0) return;
     if (!containerRef.current || !bookRef.current || !titleRef.current || !scrollIndicatorRef.current) return;
 
-    const isMobile = window.innerWidth < 768;
-    const bookXStart = isMobile ? 0 : 0;
-    const bookXOpen = isMobile ? -10 : 175;
+    const isMobile = screenWidth < 768;
+    
+    // Helper function to interpolate values based on screen width
+    const lerp = (minWidth: number, maxWidth: number, minVal: number, maxVal: number) => {
+      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, screenWidth));
+      const t = (clampedWidth - minWidth) / (maxWidth - minWidth);
+      return minVal + t * (maxVal - minVal);
+    };
+    
+    // Calculate responsive values
+    // Mobile: 320px - 767px | Desktop: 768px - 1920px+
+    const bookScale = isMobile 
+      ? lerp(320, 767, 0.55, 0.75)    // Mobile: 0.55 to 0.75 (slightly bigger)
+      : lerp(768, 1920, 0.85, 1);     // Desktop: 0.85 to 1
+    
+    const bookXOpen = isMobile
+      ? lerp(320, 767, 70, 110)       // Mobile: 70 to 110 (centered)
+      : lerp(768, 1920, 140, 200);    // Desktop: 140 to 200
+    
+    const zoomScale = isMobile
+      ? lerp(320, 767, 14, 10)        // Mobile: 14x to 10x (smaller screens need more zoom)
+      : lerp(768, 1920, 10, 6);       // Desktop: 10x to 6x
+    
+    const scrollEnd = isMobile
+      ? lerp(320, 767, 250, 350)      // Mobile: shorter scroll
+      : lerp(768, 1920, 500, 700);    // Desktop: longer scroll
+    
+    const bookXStart = 0;
 
     const ctx = gsap.context(() => {
       // Initial states
@@ -48,39 +82,76 @@ export default function BookPortal() {
         gsap.set(rightPagesRef.current, { opacity: 0 });
       }
       
-      // Flipping pages start at rotateY: 0
-      if (!isMobile && page1Ref.current && page2Ref.current && page3Ref.current) {
+      // Flipping pages start at rotateY: 0 (both mobile and desktop)
+      if (page1Ref.current && page2Ref.current && page3Ref.current) {
         gsap.set(page1Ref.current, { rotateY: 0, transformStyle: "preserve-3d" });
         gsap.set(page2Ref.current, { rotateY: 0, transformStyle: "preserve-3d" });
         gsap.set(page3Ref.current, { rotateY: 0, transformStyle: "preserve-3d" });
+      }
+      
+      // Cover back starts hidden on mobile
+      if (isMobile && coverBackRef.current) {
+        gsap.set(coverBackRef.current, { opacity: 1 });
       }
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=600%",
+          end: `+=${scrollEnd}%`,
           pin: true,
           scrub: 1,
         },
       });
 
       if (isMobile) {
-        // ===== MOBILE: Simple cover zoom =====
-        gsap.set(bookRef.current, { y: 100, scale: 0.8, opacity: 0 });
+        // ===== MOBILE: Book opens, fast page flips, then zooms =====
+        gsap.set(bookRef.current, { y: 100, scale: bookScale, opacity: 0, x: 0 });
         
-        tl.to(bookRef.current, { y: 0, scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" });
-        tl.to(titleRef.current, { opacity: 0, y: -50, duration: 0.1, ease: "power2.in" }, 0.2);
-        tl.to(scrollIndicatorRef.current, { opacity: 0, y: 50, duration: 0.1, ease: "power2.in" }, 0.2);
-        tl.to(bookRef.current, { scale: 12, x: -400, y: -100, duration: 0.5, ease: "power2.inOut" }, 0.3);
-        tl.to(".starry-bg", { opacity: 0, duration: 0.05 }, 0.45);
-        tl.to(bookRef.current, { filter: "blur(12px)", duration: 0.15, ease: "power2.inOut" }, 0.50);
+        // Phase 1: Book floats up (0-10%)
+        tl.to(bookRef.current, { y: 0, scale: bookScale, opacity: 1, x: 0, duration: 0.1, ease: "power2.out" });
+        
+        // Phase 2: Cover opens fast (10-20%)
+        tl.to(coverRef.current, { rotateY: -160, duration: 0.1, ease: "power2.inOut" }, 0.10);
+        if (rightPagesRef.current) {
+          tl.to(rightPagesRef.current, { opacity: 1, duration: 0.05, ease: "power2.out" }, 0.12);
+        }
+        tl.to(bookRef.current, { x: bookXOpen, duration: 0.1, ease: "power2.inOut" }, 0.10);
+        
+        // Fade title/indicator
+        tl.to(titleRef.current, { opacity: 0, y: -50, duration: 0.05, ease: "power2.in" }, 0.18);
+        tl.to(scrollIndicatorRef.current, { opacity: 0, y: 50, duration: 0.05, ease: "power2.in" }, 0.18);
+
+        // Phase 3: FAST page flips (20-45%)
+        // Flip 1: 5 → 10 (20-27%)
+        tl.to(page1Ref.current, { rotateY: -180, duration: 0.07, ease: "power2.inOut" }, 0.20);
+        if (coverBackRef.current) {
+          tl.to(coverBackRef.current, { opacity: 0, duration: 0.02 }, 0.24);
+        }
+        tl.to(page1Ref.current, { zIndex: 5, duration: 0.001 }, 0.28);
+
+        // Flip 2: 11 → 18 (29-36%)
+        tl.to(page2Ref.current, { rotateY: -180, duration: 0.07, ease: "power2.inOut" }, 0.29);
+        tl.to(page2Ref.current, { zIndex: 6, duration: 0.001 }, 0.37);
+
+        // Flip 3: 19 → 2 (38-45%)
+        tl.to(page3Ref.current, { rotateY: -180, duration: 0.07, ease: "power2.inOut" }, 0.38);
+
+        // Phase 4: Zoom into final spread (48-80%)
+        // Don't change x - let it zoom from current position
+        tl.to(bookRef.current, 
+          { scale: zoomScale, y: -100, transformOrigin: "50% 50%", duration: 0.32, ease: "power2.inOut" }, 
+          0.48
+        );
+        
+        tl.to(".starry-bg", { opacity: 0, duration: 0.05 }, 0.50);
+        tl.to(bookRef.current, { filter: "blur(12px)", duration: 0.08, ease: "power2.inOut" }, 0.52);
         
         if (ctaRef.current) {
           tl.fromTo(ctaRef.current,
             { y: 50, opacity: 0, pointerEvents: "none" },
-            { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.15, ease: "back.out(1.7)" },
-            0.60
+            { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.1, ease: "back.out(1.7)" },
+            0.55
           );
         }
 
@@ -89,8 +160,8 @@ export default function BookPortal() {
         
         // Phase 1: Book floats up (0-15%)
         tl.fromTo(bookRef.current,
-          { y: 100, scale: 0.7, opacity: 0, x: bookXStart },
-          { y: 0, scale: 1, opacity: 1, x: bookXStart, duration: 0.15, ease: "power2.out" }
+          { y: 100, scale: bookScale * 0.7, opacity: 0, x: bookXStart },
+          { y: 0, scale: bookScale, opacity: 1, x: bookXStart, duration: 0.15, ease: "power2.out" }
         );
 
         // Phase 2: Cover opens (15-35%)
@@ -128,26 +199,27 @@ export default function BookPortal() {
         tl.to(page3Ref.current, { rotateY: -180, duration: 0.1, ease: "power2.inOut" }, 0.62);
 
         // Phase 4: Zoom into final spread 2|3 (74-90%)
+        // Don't change x - let it zoom from current position
         tl.to(bookRef.current, 
-          { scale: 8, x: 0, y: -50, transformOrigin: "0% 50%", duration: 0.16, ease: "power2.inOut" }, 
+          { scale: zoomScale, y: -50, transformOrigin: "50% 50%", duration: 0.16, ease: "power2.inOut" }, 
           0.74
         );
         
-        tl.to(".starry-bg", { opacity: 0, duration: 0.05 }, 0.78);
-        tl.to(bookRef.current, { filter: "blur(12px)", duration: 0.1, ease: "power2.inOut" }, 0.80);
+        tl.to(".starry-bg", { opacity: 0, duration: 0.05 }, 0.75);
+        tl.to(bookRef.current, { filter: "blur(12px)", duration: 0.06, ease: "power2.inOut" }, 0.76);
         
         if (ctaRef.current) {
           tl.fromTo(ctaRef.current,
             { y: 50, opacity: 0, pointerEvents: "none" },
-            { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.1, ease: "back.out(1.7)" },
-            0.88
+            { y: 0, opacity: 1, pointerEvents: "auto", duration: 0.08, ease: "back.out(1.7)" },
+            0.78
           );
         }
       }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isMounted]);
+  }, [isMounted, screenWidth]);
 
   return (
     <div className="relative bg-indigo-950 isolate z-20">
@@ -195,7 +267,7 @@ export default function BookPortal() {
               {/* ========== RIGHT PAGES STACK ========== */}
               <div 
                 ref={rightPagesRef}
-                className="hidden md:block relative w-[400px] h-[400px] opacity-0"
+                className="relative w-[280px] md:w-[400px] h-[280px] md:h-[400px] opacity-0"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* Bottom: Final right page - 3.png */}
@@ -274,7 +346,7 @@ export default function BookPortal() {
               {/* ========== BOOK COVER ========== */}
               <div
                 ref={coverRef}
-                className="relative md:absolute md:top-0 md:left-0 w-[280px] md:w-[400px] h-[280px] md:h-[400px] origin-left z-[10]"
+                className="absolute top-0 left-0 w-[280px] md:w-[400px] h-[280px] md:h-[400px] origin-left z-[10]"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* FRONT of cover */}
@@ -295,7 +367,7 @@ export default function BookPortal() {
                 {/* BACK of cover - 4.png */}
                 <div 
                   ref={coverBackRef}
-                  className="absolute inset-0 rounded-2xl hidden md:block overflow-hidden"
+                  className="absolute inset-0 rounded-2xl overflow-hidden"
                   style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                 >
                   <Image
@@ -308,7 +380,7 @@ export default function BookPortal() {
                 </div>
               </div>
 
-              {/* Book Spine */}
+              {/* Book Spine - desktop only */}
               <div 
                 className="absolute left-0 top-0 h-[400px] w-6 bg-gradient-to-b from-indigo-700 via-purple-700 to-indigo-800 shadow-xl z-[9] hidden md:block"
                 style={{ transform: "translateX(-12px) rotateY(90deg)", transformOrigin: "right" }}
