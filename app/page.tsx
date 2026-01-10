@@ -16,9 +16,8 @@ export default function Home() {
         <MagicMirror theme="kids" />
       </div>
       
-      {/* BookPortal overlaps and covers the hero like a deck of cards */}
-      {/* negative margin pulls it up to overlap the hero area */}
-      <section id="book-portal" className="relative z-20 -mt-[30vh]">
+      {/* BookPortal slides up after hero - no overlap so hero is fully visible */}
+      <section id="book-portal" className="relative z-20">
         <BookPortal />
       </section>
       <section id="library">

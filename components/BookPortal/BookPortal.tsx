@@ -37,7 +37,7 @@ export default function BookPortal() {
     // Book X offset - smaller on mobile to keep it visible
     // Keep neutral so zoom stays centered; we'll center during zoom
     const bookXStart = isMobile ? 0 : 0;
-    const bookXOpen = isMobile ? -10 : -10;
+    const bookXOpen = isMobile ? -10 : 175;
 
     const ctx = gsap.context(() => {
       // The hero-deck is now sticky via CSS, and BookPortal has higher z-index
@@ -153,11 +153,12 @@ export default function BookPortal() {
           0.35
         );
 
-        // Phase 4: Book zooms HUGE - shifted left so right page fills screen (40-80%)
+        // Phase 4: Book zooms HUGE - use left-biased transform origin so it expands equally on screen (40-80%)
         // The book stays visible - the amber page becomes the full background
+        // transformOrigin at 25% horizontally compensates for the book being positioned right of center
         tl.to(
           bookRef.current,
-          { scale: 8, x: -500, y: -150, duration: 0.4, ease: "power2.inOut" },
+          { scale: 8, x: 0, y: -50, transformOrigin: "0% 50%", duration: 0.4, ease: "power2.inOut" },
           0.4
         );
         
