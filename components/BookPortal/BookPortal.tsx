@@ -23,6 +23,10 @@ export default function BookPortal() {
   const page3Ref = useRef<HTMLDivElement>(null); // front=19, back=2
   const coverBackRef = useRef<HTMLDivElement>(null); // Cover's back (4.png)
   
+  // Photo transformation refs
+  const photoContainerRef = useRef<HTMLDivElement>(null);
+  const sparkleTrailRef = useRef<HTMLDivElement>(null);
+  
   const [isMounted, setIsMounted] = useState(false);
   const [screenWidth, setScreenWidth] = useState(0);
 
@@ -54,11 +58,11 @@ export default function BookPortal() {
     // Calculate responsive values
     // Mobile: 320px - 767px | Desktop: 768px - 1920px+
     const bookScale = isMobile 
-      ? lerp(320, 767, 0.55, 0.75)    // Mobile: 0.55 to 0.75 (slightly bigger)
+      ? lerp(320, 767, 0.66, 0.91)    // Mobile: 0.66 to 0.91 (+20% bigger total)
       : lerp(768, 1920, 0.85, 1);     // Desktop: 0.85 to 1
     
     const bookXOpen = isMobile
-      ? lerp(320, 767, 70, 110)       // Mobile: 70 to 110 (centered)
+      ? lerp(320, 767, 90, 130)       // Mobile: 90 to 130 (shifted right)
       : lerp(768, 1920, 140, 200);    // Desktop: 140 to 200
     
     const zoomScale = isMobile
@@ -68,6 +72,15 @@ export default function BookPortal() {
     const scrollEnd = isMobile
       ? lerp(320, 767, 250, 350)      // Mobile: shorter scroll
       : lerp(768, 1920, 500, 700);    // Desktop: longer scroll
+    
+    // Photo circle - stays in place, then drops down before CTA
+    const photoDropY = isMobile
+      ? lerp(320, 767, 180, 250)      // Mobile: drop position (good)
+      : lerp(768, 1920, 120, 180);    // Desktop: drop position (reduced ~100px more)
+    
+    const photoFinalScale = isMobile
+      ? lerp(320, 767, 1.2, 1.4)      // Mobile: scale up slightly
+      : lerp(768, 1920, 1.3, 1.6);    // Desktop: scale up slightly
     
     const bookXStart = 0;
 
@@ -92,6 +105,20 @@ export default function BookPortal() {
       // Cover back starts hidden on mobile
       if (isMobile && coverBackRef.current) {
         gsap.set(coverBackRef.current, { opacity: 1 });
+      }
+      
+      // Photo container starts hidden and centered
+      if (photoContainerRef.current) {
+        gsap.set(photoContainerRef.current, { 
+          opacity: 0, 
+          scale: 0.5, 
+          y: 0,
+          x: 0,
+          xPercent: -50 // Center the element on its position
+        });
+      }
+      if (sparkleTrailRef.current) {
+        gsap.set(sparkleTrailRef.current, { opacity: 0, scale: 0 });
       }
 
       const tl = gsap.timeline({
@@ -118,9 +145,32 @@ export default function BookPortal() {
         }
         tl.to(bookRef.current, { x: bookXOpen, duration: 0.1, ease: "power2.inOut" }, 0.10);
         
-        // Fade title/indicator
+        // Fade title/indicator - photo appears at same time
         tl.to(titleRef.current, { opacity: 0, y: -50, duration: 0.05, ease: "power2.in" }, 0.18);
         tl.to(scrollIndicatorRef.current, { opacity: 0, y: 50, duration: 0.05, ease: "power2.in" }, 0.18);
+        
+        // Photo appears when title fades, stays in place pulsing
+        if (photoContainerRef.current) {
+          // Appear at title fade
+          tl.to(photoContainerRef.current, { 
+            opacity: 1, scale: 1, y: 0, duration: 0.05, ease: "back.out(1.7)" 
+          }, 0.18);
+          
+          // Stay in place (just pulsing via CSS) until after blur, then drop down
+          tl.to(photoContainerRef.current, { 
+            y: photoDropY, scale: photoFinalScale, duration: 0.08, ease: "power2.inOut" 
+          }, 0.52);
+          
+          // Transform: photo fades out, upload state fades in right before CTA
+          tl.to(".photo-state", { opacity: 0, duration: 0.04, ease: "power2.inOut" }, 0.54);
+          tl.to(".upload-state", { opacity: 1, duration: 0.04, ease: "power2.inOut" }, 0.54);
+          tl.to(".photo-label", { opacity: 0, duration: 0.03, ease: "power2.in" }, 0.53);
+        }
+        
+        // Trail - hide it since photo stays in place
+        if (sparkleTrailRef.current) {
+          gsap.set(sparkleTrailRef.current, { opacity: 0 });
+        }
 
         // Phase 3: FAST page flips (20-45%)
         // Flip 1: 5 → 10 (20-27%)
@@ -175,9 +225,32 @@ export default function BookPortal() {
         // Shift book to center
         tl.to(bookRef.current, { x: bookXOpen, duration: 0.2, ease: "power2.inOut" }, 0.15);
         
-        // Fade title/indicator
+        // Fade title/indicator first
         tl.to(titleRef.current, { opacity: 0, y: -50, duration: 0.05, ease: "power2.in" }, 0.30);
         tl.to(scrollIndicatorRef.current, { opacity: 0, y: 50, duration: 0.05, ease: "power2.in" }, 0.30);
+        
+        // Photo appears AFTER title is gone, stays in place pulsing
+        if (photoContainerRef.current) {
+          // Appear after title fades out (0.30 + 0.05 = 0.35, add small buffer)
+          tl.to(photoContainerRef.current, { 
+            opacity: 1, scale: 1, y: 0, duration: 0.05, ease: "back.out(1.7)" 
+          }, 0.36);
+          
+          // Stay in place (just pulsing via CSS) until after blur, then drop down
+          tl.to(photoContainerRef.current, { 
+            y: photoDropY, scale: photoFinalScale, duration: 0.06, ease: "power2.inOut" 
+          }, 0.76);
+          
+          // Transform: photo fades out, upload state fades in right before CTA
+          tl.to(".photo-state", { opacity: 0, duration: 0.04, ease: "power2.inOut" }, 0.77);
+          tl.to(".upload-state", { opacity: 1, duration: 0.04, ease: "power2.inOut" }, 0.77);
+          tl.to(".photo-label", { opacity: 0, duration: 0.03, ease: "power2.in" }, 0.76);
+        }
+        
+        // Trail - hide it since photo stays in place
+        if (sparkleTrailRef.current) {
+          gsap.set(sparkleTrailRef.current, { opacity: 0 });
+        }
 
         // Phase 3: Page flips - pages rotate and their backs show the new left page
         
@@ -251,6 +324,80 @@ export default function BookPortal() {
             Step Into Your Story
           </h2>
           <p className="text-indigo-200 text-lg">Scroll to see the magic happen</p>
+        </div>
+
+        {/* Photo Circle - Transforms into Upload Circle */}
+        <div
+          ref={photoContainerRef}
+          className="absolute z-40 top-[18%] md:top-[10%] left-1/2 -translate-x-1/2 opacity-0"
+        >
+          <div className="relative cursor-pointer group animate-float">
+            {/* Animated glow ring */}
+            <div className="absolute -inset-2 md:-inset-3 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-75 blur-md animate-pulse-glow" />
+            
+            {/* Circle container - holds both states */}
+            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white shadow-2xl overflow-hidden">
+              {/* Photo state (fades out) */}
+              <div className="photo-state absolute inset-0">
+                <Image 
+                  src="/Sura (20 x 20 cm)/1.png.jpeg" 
+                  alt="Your child"
+                  fill
+                  className="object-cover object-center scale-150"
+                />
+              </div>
+              
+              {/* Upload state (fades in) */}
+              <div className="upload-state absolute inset-0 bg-white/20 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 border-4 border-dashed border-white/60 rounded-full -m-1">
+                <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-white text-[8px] md:text-[10px] font-medium mt-0.5">Upload</span>
+              </div>
+            </div>
+            
+            {/* Label */}
+            <div className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+              <div className="photo-label bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 rounded-full shadow-lg">
+                Your Photo ✨
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Magic Trail - Follows behind the photo */}
+        <div
+          ref={sparkleTrailRef}
+          className="absolute z-25 top-[20%] md:top-[18%] right-[10%] md:right-[20%] opacity-0 pointer-events-none"
+        >
+          {/* Trailing sparkles that fade */}
+          <div className="relative w-24 h-16 md:w-40 md:h-24">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${Math.max(4, 12 - i)}px`,
+                  height: `${Math.max(4, 12 - i)}px`,
+                  background: i % 3 === 0 ? '#ec4899' : i % 3 === 1 ? '#a855f7' : '#6366f1',
+                  left: `${i * 7}%`,
+                  top: `${30 + Math.sin(i * 0.5) * 20}%`,
+                  opacity: Math.max(0.2, 1 - i * 0.08),
+                  filter: 'blur(1px)',
+                  boxShadow: `0 0 ${8 - i * 0.5}px currentColor`,
+                }}
+              />
+            ))}
+            {/* Glowing trail line */}
+            <div 
+              className="absolute inset-0 opacity-50"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), rgba(236, 72, 153, 0.3), transparent)',
+                filter: 'blur(8px)',
+                borderRadius: '50%',
+              }}
+            />
+          </div>
         </div>
 
         {/* Main Content Container */}
@@ -390,23 +537,26 @@ export default function BookPortal() {
           </div>
         </div>
 
-        {/* CTA Button */}
+        {/* CTA Section - Text and Button only (photo circle merges into this) */}
         <div
           ref={ctaRef}
           className="absolute inset-0 flex items-center justify-center z-50 opacity-0 pointer-events-none"
         >
-          <div className="flex flex-col items-center gap-6">
-            <p className="text-indigo-800 text-lg md:text-xl font-serif text-center px-8 drop-shadow-lg">
-              Your story awaits...
+          <div className="flex flex-col items-center gap-4 md:gap-6 mt-16 md:mt-20">
+            {/* CTA Text */}
+            <p className="text-white/90 text-sm md:text-lg font-medium text-center px-8 drop-shadow-lg">
+              Upload your child&apos;s photo
             </p>
+            
+            {/* Generate Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 md:px-10 md:py-5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-bold rounded-full shadow-2xl shadow-indigo-500/40 text-lg md:text-2xl flex items-center gap-3 hover:shadow-indigo-500/60 transition-shadow pointer-events-auto"
+              className="px-6 py-3 md:px-10 md:py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-bold rounded-full shadow-2xl shadow-purple-500/40 text-base md:text-xl flex items-center gap-2 md:gap-3 hover:shadow-purple-500/60 transition-shadow pointer-events-auto"
             >
-              <span className="text-xl md:text-2xl">✨</span>
-              Write Your Own Adventure
-              <span className="text-xl md:text-2xl">✨</span>
+              <span className="text-lg md:text-xl">✨</span>
+              Generate Free Book Cover
+              <span className="text-lg md:text-xl">✨</span>
             </motion.button>
           </div>
         </div>

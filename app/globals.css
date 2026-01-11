@@ -139,9 +139,24 @@ html.lenis, html.lenis body {
   color: white;
 }
 
-/* Animate float for BookPortal */
+/* Animate float for BookPortal - subtle hover */
+@keyframes photo-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
 .animate-float {
-  animation: float 4s ease-in-out infinite;
+  animation: photo-float 3s ease-in-out infinite;
+}
+
+/* Pulsing glow animation */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* Perspective utility */
